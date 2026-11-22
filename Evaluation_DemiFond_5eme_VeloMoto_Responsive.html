@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Défi Vélo & Moto — Évaluation Demi-Fond 5ème</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-grad: linear-gradient(145deg, #bae6fd 0%, #dcfce7 50%, #fef08a 100%);
+            --ink: #0f172a;
+            --muted: #475569;
+            --white: #ffffff;
+
+            --velo-main: #10b981;
+            --velo-dark: #047857;
+            --moto-main: #f43f5e;
+            --moto-dark: #be123c;
+            --recup-main: #f59e0b;
+            --recup-dark: #b45309;
+            --bilan-main: #2563eb;
+            --bilan-dark: #1e40af;
+
+            --c5b: #2563eb;
+            --c5c: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        h1, h2, .fun-font {
+            font-family: 'Fredoka', 'Nunito', 'Segoe UI', sans-serif;
+        }
+
+        html, body {
+            margin: 0; padding: 0;
+            background: var(--bg-grad);
+            color: var(--ink);
+            height: 100dvh; width: 100vw;
+            overflow: hidden;
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        button {
+            cursor: pointer; border: none; font-weight: 800;
+            transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s;
+        }
+        button:active { transform: translateY(2px) scale(0.98); }
+
+        .btn {
+            padding: 7px 12px; border-radius: 10px; color: #fff; font-size: 0.82rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+            box-shadow: 0 3px 0 rgba(15, 23, 42, 0.22); white-space: nowrap;
+        }
+        .btn:active { box-shadow: 0 1px 0 rgba(15, 23, 42, 0.22); }
+        .btn-primary { background: #3b82f6; }
+        .btn-success { background: #10b981; }
+        .btn-danger  { background: #ef4444; }
+        .btn-purple  { background: #8b5cf6; }
+        .btn-slate   { background: #334155; }
+
+        /* ================= ECRAN 1 : ACCUEIL ================= */
+        #screen-home {
+            display: flex; flex-direction: column;
+            height: 100dvh; width: 100%;
+            padding: 8px 10px; gap: 8px;
+            overflow: hidden;
+        }
+        .home-top {
+            display: grid; grid-template-columns: 1fr 2fr; gap: 8px; flex-shrink: 0;
+        }
+        .header-box {
+            background: var(--white); border: 3px solid #60a5fa; border-radius: 16px;
+            padding: 8px 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+            box-shadow: 0 4px 0 #93c5fd; min-width: 0;
+        }
+        .header-box h1 {
+            margin: 0; font-size: clamp(1rem, 1.8vw, 1.25rem); color: #1d4ed8;
+            display: flex; align-items: center; gap: 5px; line-height: 1.1;
+        }
+        .header-sub { font-size: 0.75rem; color: var(--muted); font-weight: 800; }
+        .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .team-box {
+            background: var(--white); border: 3px solid #fbbf24; border-radius: 16px;
+            padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; gap: 6px;
+            box-shadow: 0 4px 0 #fde68a; min-width: 0;
+        }
+        .team-title {
+            font-size: 0.84rem; font-weight: 800; color: #b45309;
+            display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;
+        }
+        .btn-launch {
+            background: linear-gradient(180deg, #22c55e, #16a34a);
+            color: #fff; padding: 6px 16px; border-radius: 999px; font-size: 0.9rem;
+            box-shadow: 0 4px 0 #15803d; animation: popPulse 1.1s infinite alternate;
+        }
+        @keyframes popPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.04); }
+        }
+
+        .slots-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .slot {
+            background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 10px;
+            padding: 5px 6px; text-align: center; cursor: pointer; position: relative; min-height: 48px;
+            display: flex; flex-direction: column; justify-content: center; min-width: 0;
+        }
+        .slot.active {
+            border-color: #f59e0b; background: #fffbeb;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.28);
+        }
+        .slot.filled { border-style: solid; border-color: #3b82f6; background: #eff6ff; }
+        .slot-role { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; font-weight: 900; }
+        .slot.active .slot-role { color: #d97706; }
+        .slot-name { font-size: 0.82rem; font-weight: 900; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .slot-remove {
+            position: absolute; top: -7px; right: -7px; width: 20px; height: 20px; border-radius: 50%;
+            background: #ef4444; color: #fff; font-size: 0.68rem; font-weight: 900;
+            display: none; align-items: center; justify-content: center; border: 2px solid #fff;
+        }
+        .slot.filled .slot-remove { display: flex; }
+
+        .filter-bar {
+            display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 5px 12px; border-radius: 999px; font-size: 0.78rem;
+            background: var(--white); color: var(--muted); border: 2px solid #cbd5e1;
+        }
+        .filter-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+        .hint-pill {
+            margin-left: auto; font-size: 0.74rem; color: #1e293b; font-weight: 800;
+            background: rgba(255,255,255,0.85); padding: 4px 10px; border-radius: 999px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .students-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+            gap: 8px; overflow-y: auto; padding: 6px 2px 16px 2px; flex: 1; min-height: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        .student-card {
+            background: var(--white); border: 3px solid #e2e8f0; border-radius: 14px;
+            padding: 8px 6px; text-align: center; cursor: pointer; position: relative;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 78px;
+            box-shadow: 0 3px 0 #cbd5e1;
+        }
+        .student-card:active { transform: translateY(2px); box-shadow: 0 1px 0 #cbd5e1; }
+        .student-card.selected { opacity: 0.55; border-style: dashed; border-color: #f59e0b; background: #fffbeb; }
+        .student-card.done { border-color: #10b981; background: #ecfdf5; box-shadow: 0 3px 0 #6ee7b7; }
+        .card-class {
+            position: absolute; top: 0; right: 0; font-size: 0.6rem; font-weight: 900;
+            padding: 2px 6px; border-bottom-left-radius: 7px; border-top-right-radius: 10px;
+        }
+        .c-5b { background: var(--c5b); color: #fff; }
+        .c-5c { background: var(--c5c); color: #0f172a; }
+        .card-sex {
+            position: absolute; bottom: 4px; left: 5px; font-size: 0.66rem; font-weight: 900;
+            padding: 2px 7px; border-radius: 6px;
+        }
+        .card-sex.sex-f { background: #fce7f3; color: #be185d; }
+        .card-sex.sex-g { background: #dbeafe; color: #1d4ed8; }
+        .card-badge {
+            position: absolute; top: -9px; left: -5px; background: #f59e0b; color: #fff;
+            font-size: 0.66rem; font-weight: 900; padding: 2px 7px; border-radius: 999px;
+            border: 2px solid #fff;
+        }
+        .card-name { font-size: 0.9rem; font-weight: 900; color: var(--ink); line-height: 1.15; }
+        .card-meta { font-size: 0.7rem; color: var(--muted); font-weight: 800; margin-top: 2px; }
+        .card-note {
+            font-size: 0.7rem; font-weight: 900; color: #047857; background: #d1fae5;
+            padding: 1px 7px; border-radius: 999px; margin-top: 3px;
+        }
+
+        /* ================= ECRAN 2 : EVALUATION ================= */
+        #screen-eval {
+            display: none; flex-direction: column;
+            height: 100dvh; width: 100%; padding: 6px 8px; gap: 6px; overflow: hidden;
+        }
+        .eval-header {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            background: var(--white); border: 3px solid #93c5fd; border-radius: 14px;
+            padding: 5px 8px; flex-shrink: 0; box-shadow: 0 3px 0 #bfdbfe;
+        }
+        .eval-nav-btns { display: flex; gap: 6px; flex-shrink: 0; }
+        .runner-tabs { display: flex; gap: 6px; flex: 1; min-width: 0; }
+        .runner-tab {
+            flex: 1; min-width: 0; padding: 5px 10px; border-radius: 10px;
+            background: #f1f5f9; color: var(--muted); border: 2px solid transparent;
+            text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 6px;
+        }
+        .runner-tab.active {
+            background: #eff6ff; color: var(--ink); border-color: #3b82f6;
+            box-shadow: 0 2px 0 #93c5fd;
+        }
+        .tab-info { min-width: 0; }
+        .tab-main { font-size: 0.88rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tab-sub { font-size: 0.68rem; color: var(--muted); font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .score-pill {
+            background: linear-gradient(135deg, #10b981, #059669); color: #fff;
+            border-radius: 12px; padding: 4px 12px; text-align: center; flex-shrink: 0;
+            box-shadow: 0 3px 0 #047857;
+        }
+        .score-pill-val { font-family: 'Fredoka', sans-serif; font-size: 1.2rem; font-weight: 700; line-height: 1.05; }
+        .score-pill-sub { font-size: 0.62rem; font-weight: 800; opacity: 0.95; }
+
+        /* ONGLETS DE PHASE (VISIBLES SUR PORTABLE / PETIT ECRAN) */
+        .phase-tabs {
+            display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; flex-shrink: 0;
+        }
+        .phase-tab {
+            padding: 9px 6px; border-radius: 12px; font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem; font-weight: 700; background: var(--white); color: var(--muted);
+            border: 3px solid #cbd5e1; text-align: center;
+        }
+        .phase-tab.active-velo  { background: #10b981; color: #fff; border-color: #047857; }
+        .phase-tab.active-moto  { background: #f43f5e; color: #fff; border-color: #be123c; }
+        .phase-tab.active-bilan { background: #2563eb; color: #fff; border-color: #1e40af; }
+
+        /* LAYOUT 3 COLONNES TABLETTE PAYSAGE */
+        .eval-body {
+            display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.95fr) minmax(0, 0.9fr);
+            gap: 8px; flex: 1; min-height: 0; overflow: hidden;
+        }
+        .eval-col {
+            position: relative; border-radius: 16px; padding: 8px 10px;
+            display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+            box-shadow: 0 5px 0 rgba(15, 23, 42, 0.08);
+        }
+        .eval-col-content {
+            position: relative; z-index: 2; display: flex; flex-direction: column;
+            gap: 6px; flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+        }
+
+        .bg-watermark {
+            position: absolute; z-index: 0; pointer-events: none;
+            right: -12px; bottom: 4px; width: 88%; max-width: 320px; opacity: 0.15;
+            transform: rotate(-6deg);
+        }
+
+        .col-velo  { background: linear-gradient(180deg, #ecfdf5 0%, #bbf7d0 100%); border: 3px solid var(--velo-main); }
+        .col-moto  { background: linear-gradient(180deg, #fff1f2 0%, #fecdd3 100%); border: 3px solid var(--moto-main); }
+        .col-bilan { background: linear-gradient(180deg, #ffffff 0%, #dbeafe 100%); border: 3px solid var(--bilan-main); }
+
+        .col-title {
+            display: flex; justify-content: space-between; align-items: center; gap: 6px;
+            font-family: 'Fredoka', sans-serif; font-size: clamp(0.92rem, 1.4vw, 1.1rem); font-weight: 700;
+        }
+        .avg-badge {
+            font-family: 'Fredoka', sans-serif; font-size: 0.85rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 999px; color: #fff; white-space: nowrap;
+        }
+        .avg-velo { background: var(--velo-dark); }
+        .avg-moto { background: var(--moto-dark); }
+
+        .projet-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 6px;
+            background: rgba(255,255,255,0.92); padding: 5px 8px; border-radius: 12px;
+            border: 2px solid rgba(15,23,42,0.1);
+        }
+        .projet-row label { font-size: 0.8rem; font-weight: 900; color: #1e293b; }
+        .vma-tag {
+            font-size: 0.72rem; font-weight: 900; color: #047857; background: #d1fae5;
+            padding: 2px 7px; border-radius: 999px; white-space: nowrap;
+        }
+        .num-input {
+            width: 68px; padding: 4px; border-radius: 8px; border: 2px solid #3b82f6;
+            background: #fff; color: var(--ink); font-size: 1rem; font-weight: 900; text-align: center;
+        }
+
+        /* PERIODES */
+        .periods-grid-9 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+        .periods-grid-3 { display: grid; grid-template-columns: 1fr; gap: 6px; } /* 1 colonne large sur tablette = zéro débordement */
+
+        .period-card {
+            background: rgba(255, 255, 255, 0.92); border: 2px solid rgba(15, 23, 42, 0.12);
+            border-radius: 12px; padding: 5px 7px; display: flex; flex-direction: column; gap: 4px;
+            cursor: pointer; min-width: 0;
+        }
+        .period-card.active-velo {
+            border-color: var(--velo-dark); background: #fff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.32);
+        }
+        .period-card.active-moto {
+            border-color: var(--moto-dark); background: #fff;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.32);
+        }
+        .period-head {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.74rem; font-weight: 900; color: var(--muted);
+        }
+        .period-card.active-velo .period-head { color: var(--velo-dark); }
+        .period-card.active-moto .period-head { color: var(--moto-dark); }
+        .period-controls { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+        .btn-step {
+            width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; background: #e2e8f0; color: var(--ink);
+            font-size: 1.15rem; font-weight: 900; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 0 #94a3b8;
+        }
+        .btn-step:active { box-shadow: none; }
+        .period-val {
+            flex: 1; min-width: 0; width: 100%; text-align: center; font-size: 1.1rem; font-weight: 900;
+            background: #f8fafc; color: var(--ink); border: 2px solid #cbd5e1; border-radius: 8px; padding: 2px;
+        }
+        .pop-anim { animation: numPop 0.22s ease; }
+        @keyframes numPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.18); background: #fef08a; }
+            100% { transform: scale(1); }
+        }
+
+        /* GROS BOUTON +1 PLOT */
+        .big-plus-btn {
+            width: 100%; padding: 12px 10px; border-radius: 14px;
+            font-family: 'Fredoka', sans-serif; font-size: clamp(1rem, 1.6vw, 1.2rem); font-weight: 700;
+            color: #fff; background: linear-gradient(180deg, #10b981, #059669);
+            box-shadow: 0 5px 0 #047857; flex-shrink: 0;
+        }
+        .big-plus-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #047857; }
+        .big-plus-btn.moto-btn {
+            background: linear-gradient(180deg, #f43f5e, #e11d48);
+            box-shadow: 0 5px 0 #9f1239;
+        }
+        .big-plus-btn.moto-btn:active { box-shadow: 0 1px 0 #9f1239; }
+
+        /* TUILES BAS D'ECRAN */
+        .stats-big {
+            display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: auto;
+        }
+        .stat-tile {
+            background: rgba(255,255,255,0.94); border: 2px solid rgba(15,23,42,0.12); border-radius: 12px;
+            padding: 6px 6px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+        .stat-tile-lbl { font-size: 0.68rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
+        .stat-tile-val { font-family: 'Fredoka', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-top: 2px; }
+        .stat-tile.good { border-color: #10b981; background: #ecfdf5; }
+        .stat-tile.good .stat-tile-val { color: #047857; }
+        .stat-tile.warn { border-color: #f59e0b; background: #fffbeb; }
+        .stat-tile.warn .stat-tile-val { color: #b45309; }
+
+        /* BANDEAU CONSEIL FIN DE 9' */
+        .advice-banner {
+            display: none; align-items: center; justify-content: space-between; gap: 6px;
+            background: linear-gradient(135deg, #fef08a, #fde047);
+            border: 2px solid #eab308; border-radius: 12px; padding: 6px 8px;
+        }
+        .advice-banner-txt { font-size: 0.74rem; font-weight: 900; color: #713f12; line-height: 1.2; }
+        .advice-banner-btn {
+            background: #b45309; color: #fff; padding: 5px 8px; border-radius: 8px;
+            font-size: 0.72rem; flex-shrink: 0;
+        }
+
+        /* RECUPERATION INFO */
+        .recup-info-card {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 2px solid #f59e0b; border-radius: 12px; padding: 7px 9px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .recup-emoji { font-size: 1.6rem; line-height: 1; }
+        .recup-info-title { font-family: 'Fredoka', sans-serif; font-size: 0.86rem; color: #b45309; }
+        .recup-info-sub { font-size: 0.72rem; font-weight: 800; color: #78350f; line-height: 1.2; margin-top: 1px; }
+
+        /* COLONNE 3 : POINTS */
+        .criteria-list { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; font-weight: 800; }
+        .crit-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #fff; padding: 5px 8px; border-radius: 10px; border: 2px solid #cbd5e1;
+        }
+        .crit-pts {
+            font-family: 'Fredoka', sans-serif; font-weight: 700; color: #047857; background: #d1fae5;
+            padding: 1px 8px; border-radius: 999px; font-size: 0.82rem; white-space: nowrap;
+        }
+        .crit-row.prof-row { border-color: #c4b5fd; background: #f5f3ff; }
+        .crit-row.prof-row .crit-pts { color: #6d28d9; background: #ede9fe; }
+
+        .tip-box {
+            margin-top: auto; font-size: 0.76rem; font-weight: 800; color: #1e3a8a;
+            background: #dbeafe; border: 2px solid #60a5fa; padding: 8px 10px; border-radius: 12px;
+            line-height: 1.3;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.78);
+            z-index: 1000; align-items: center; justify-content: center; padding: 10px;
+        }
+        .modal-box {
+            background: #fff; border: 4px solid #3b82f6; border-radius: 18px;
+            width: 100%; max-width: 1120px; max-height: 92dvh; display: flex; flex-direction: column;
+            overflow: hidden; box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+        }
+        .modal-box-sm { max-width: 500px; border-color: #f59e0b; }
+        .modal-head {
+            padding: 10px 14px; background: #eff6ff; border-bottom: 2px solid #bfdbfe;
+            display: flex; justify-content: space-between; align-items: center; gap: 8px;
+        }
+        .modal-box-sm .modal-head { background: #fffbeb; border-bottom-color: #fde68a; }
+        .modal-head h2 { margin: 0; font-size: 1.05rem; color: #1d4ed8; }
+        .modal-box-sm .modal-head h2 { color: #b45309; }
+        .modal-body { padding: 12px; overflow: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+        .modal-foot {
+            padding: 10px 14px; background: #f8fafc; border-top: 2px solid #e2e8f0;
+            display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
+        }
+
+        .advice-modal-card {
+            background: #f0fdf4; border: 3px solid #10b981; border-radius: 14px;
+            padding: 12px; margin-bottom: 10px; font-size: 0.92rem; font-weight: 800; color: #064e3b; line-height: 1.4;
+        }
+        .advice-modal-target {
+            background: #fff1f2; border: 3px solid #f43f5e; border-radius: 14px;
+            padding: 12px; font-size: 0.95rem; font-weight: 900; color: #881337; line-height: 1.4;
+        }
+
+        table.bilan-table { width: 100%; border-collapse: collapse; font-size: 0.76rem; text-align: center; min-width: 680px; }
+        table.bilan-table th {
+            background: #1e3a8a; color: #fff; padding: 8px 4px; border: 1px solid #cbd5e1;
+            position: sticky; top: 0; z-index: 2;
+        }
+        table.bilan-table td { padding: 6px 4px; border: 1px solid #e2e8f0; font-weight: 700; }
+        table.bilan-table tr:nth-child(even) { background: #f8fafc; }
+        .prof-btn {
+            padding: 4px 7px; border-radius: 6px; font-size: 0.72rem; background: #e2e8f0; color: #334155; margin: 0 1px;
+        }
+        .prof-btn.active-r { background: #f59e0b; color: #fff; }
+        .prof-btn.active-1 { background: #b45309; color: #fff; }
+        .prof-btn.active-2 { background: #64748b; color: #fff; }
+        .prof-btn.active-3 { background: #eab308; color: #0f172a; }
+
+        /* ================= RESPONSIVE PORTABLE & PETITE TABLETTE (<= 860px) ================= */
+        @media (max-width: 860px) {
+            /* Accueil scrollable naturellement sur mobile */
+            #screen-home { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .home-top { grid-template-columns: 1fr; }
+            .slots-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .hint-pill { display: none; }
+            .students-grid { overflow-y: visible; flex: none; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
+
+            /* Header Eval sur 2 lignes propres */
+            .eval-header { flex-wrap: wrap; gap: 6px; padding: 6px; }
+            .eval-nav-btns { order: 1; }
+            .score-pill { order: 2; padding: 4px 10px; }
+            .runner-tabs { order: 3; flex-basis: 100%; }
+
+            /* Onglets de phase activés : 1 seule colonne visible à la fois ! */
+            .phase-tabs { display: grid; }
+            .eval-body { display: flex; flex-direction: column; }
+            .eval-col { display: none; flex: 1; min-height: 0; }
+            .eval-col.mobile-active { display: flex; }
+
+            /* Boutons encore plus grands au doigt sur téléphone */
+            .btn-step { width: 38px; height: 38px; font-size: 1.3rem; }
+            .period-val { font-size: 1.25rem; }
+            .big-plus-btn { padding: 15px 12px; font-size: 1.25rem; }
+            .crit-row { padding: 8px 10px; font-size: 0.9rem; }
+        }
+
+        /* ================= TABLETTE PAYSAGE COMPACTE (HAUTEUR <= 620px) ================= */
+        @media (min-width: 861px) and (max-height: 620px) {
+            #screen-eval { padding: 5px 8px; gap: 5px; }
+            .eval-header { padding: 4px 8px; }
+            .eval-col { padding: 6px 8px; }
+            .eval-col-content { gap: 4px; }
+            .period-card { padding: 4px 6px; gap: 2px; }
+            .btn-step { width: 28px; height: 28px; font-size: 1rem; }
+            .period-val { font-size: 1rem; }
+            .big-plus-btn { padding: 9px 8px; font-size: 1rem; }
+            .stat-tile { padding: 4px; }
+            .stat-tile-val { font-size: 1rem; }
+            .crit-row { padding: 4px 7px; font-size: 0.74rem; }
+            .tip-box { padding: 6px 8px; font-size: 0.7rem; }
+        }
+    </style>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <!-- ================= ECRAN 1 : ACCUEIL ================= -->
+    <div id="screen-home">
+        <div class="home-top">
+            <div class="header-box">
+                <h1>🚲 Défi Vélo & Moto 🏍️</h1>
+                <div class="header-sub">
+                    Éval Demi-Fond 5ème • <span id="sync-status" style="color:#d97706;">Initialisation...</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-slate" onclick="toggleFullScreen()">🔲 Plein écran</button>
+                    <button class="btn btn-purple" onclick="openBilan()">📊 Bilan Prof</button>
+                </div>
+            </div>
+
+            <div class="team-box">
+                <div class="team-title">
+                    <span>👥 Équipe (2 ou 4 élèves)</span>
+                    <button class="btn-launch fun-font" id="btn-launch" style="display:none;" onclick="startEvaluation()">🚀 C'EST PARTI !</button>
+                </div>
+                <div class="slots-grid">
+                    <div class="slot active" id="slot-r1" onclick="focusSlot('r1')">
+                        <div class="slot-role">🏃 Coureur 1</div>
+                        <div class="slot-name" id="name-r1">Choisir...</div>
+                        <div class="slot-remove" onclick="removeSlot('r1', event)">✕</div>
+                    </div>
+                    <div class="slot" id="slot-s1" onclick="focusSlot('s1')">
+                        <div class="slot-role">👁️ Obs. 1</div>
+                        <div class="slot-name" id="name-s1">Choisir...</div>
+                        <div class="slot-remove" onclick="removeSlot('s1', event)">✕</div>
+                    </div>
+                    <div class="slot" id="slot-r2" onclick="focusSlot('r2')">
+                        <div class="slot-role">🏃 Coureur 2</div>
+                        <div class="slot-name" id="name-r2">Choisir...</div>
+                        <div class="slot-remove" onclick="removeSlot('r2', event)">✕</div>
+                    </div>
+                    <div class="slot" id="slot-s2" onclick="focusSlot('s2')">
+                        <div class="slot-role">👁️ Obs. 2</div>
+                        <div class="slot-name" id="name-s2">Choisir...</div>
+                        <div class="slot-remove" onclick="removeSlot('s2', event)">✕</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" id="f-all" onclick="setClassFilter('ALL')">Tous (43)</button>
+            <button class="filter-btn" id="f-5B" onclick="setClassFilter('5B')">5B (22)</button>
+            <button class="filter-btn" id="f-5C" onclick="setClassFilter('5C')">5C (21)</button>
+            <span class="hint-pill">💡 Clique sur <strong>G / F</strong> sur une carte pour changer le barème</span>
+        </div>
+
+        <div class="students-grid" id="students-grid"></div>
+    </div>
+
+    <!-- ================= ECRAN 2 : EVALUATION ================= -->
+    <div id="screen-eval">
+        <div class="eval-header">
+            <div class="eval-nav-btns">
+                <button class="btn btn-danger" onclick="backHome()">⬅ Accueil</button>
+                <button class="btn btn-purple" onclick="swapRoles()">🔄 Inverser</button>
+            </div>
+            <div class="runner-tabs" id="runner-tabs"></div>
+            <div class="score-pill">
+                <div class="score-pill-val" id="live-score-main">0 / 16</div>
+                <div class="score-pill-sub" id="live-score-sub">+ ?/4 Prof</div>
+            </div>
+        </div>
+
+        <!-- ONGLETS DE PHASE (MOBILE) -->
+        <div class="phase-tabs">
+            <button class="phase-tab active-velo" id="ptab-velo" onclick="setMobilePhase('velo')">🚲 9' Vélo</button>
+            <button class="phase-tab" id="ptab-moto" onclick="setMobilePhase('moto')">🏍️ 3' Moto</button>
+            <button class="phase-tab" id="ptab-bilan" onclick="setMobilePhase('bilan')">🏆 Points</button>
+        </div>
+
+        <div class="eval-body">
+            <!-- COLONNE 1 : COURSE 9 MIN (VELO) -->
+            <div class="eval-col col-velo mobile-active" id="col-velo">
+                <svg class="bg-watermark" viewBox="0 0 240 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="52" cy="102" r="36" stroke="#047857" stroke-width="9"/>
+                    <circle cx="52" cy="102" r="7" fill="#047857"/>
+                    <circle cx="188" cy="102" r="36" stroke="#047857" stroke-width="9"/>
+                    <circle cx="188" cy="102" r="7" fill="#047857"/>
+                    <path d="M52 102 L106 102 L154 50 L88 50 Z" stroke="#047857" stroke-width="8" stroke-linejoin="round"/>
+                    <path d="M106 102 L82 36" stroke="#047857" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M68 36 L98 36" stroke="#047857" stroke-width="9" stroke-linecap="round"/>
+                    <path d="M188 102 L148 34 L172 30" stroke="#047857" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+
+                <div class="eval-col-content">
+                    <div class="col-title" style="color:var(--velo-dark);">
+                        <span>🚲 Course 9' • Vélo</span>
+                        <span class="avg-badge avg-velo" id="v9-avg-badge">0.0 km/h</span>
+                    </div>
+
+                    <div class="projet-row">
+                        <label for="input-p9">🎯 Projet 9' (km/h) :</label>
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <span class="vma-tag" id="vma-hint">VMA --</span>
+                            <input type="number" step="0.5" min="4" max="20" id="input-p9" class="num-input" oninput="updateProjet('p9', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="periods-grid-9" id="periods-9"></div>
+
+                    <button class="big-plus-btn" id="btn-plus-9" onclick="addPlotActive(9)">+ 1 PLOT • P1 (1'30)</button>
+
+                    <div class="advice-banner" id="advice-banner">
+                        <div class="advice-banner-txt" id="advice-banner-txt">💡 Bilan 9' prêt !</div>
+                        <button class="advice-banner-btn" onclick="openAdviceModal()">Conseil</button>
+                    </div>
+
+                    <div class="stats-big">
+                        <div class="stat-tile" id="tile-e9">
+                            <span class="stat-tile-lbl">🎯 Écart 9'</span>
+                            <span class="stat-tile-val" id="v9-ecart">--</span>
+                        </div>
+                        <div class="stat-tile" id="tile-r9">
+                            <span class="stat-tile-lbl">⏱️ Régularité</span>
+                            <span class="stat-tile-val" id="v9-reg">0 / 6</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLONNE 2 : RECUP 6' + COURSE 3' (MOTO) -->
+            <div class="eval-col col-moto" id="col-moto">
+                <svg class="bg-watermark" viewBox="0 0 260 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="58" cy="104" r="34" stroke="#be123c" stroke-width="11"/>
+                    <circle cx="58" cy="104" r="8" fill="#be123c"/>
+                    <circle cx="202" cy="104" r="34" stroke="#be123c" stroke-width="11"/>
+                    <circle cx="202" cy="104" r="8" fill="#be123c"/>
+                    <path d="M58 104 L118 96 L156 58 L202 104" stroke="#be123c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M84 64 L148 56 L174 34 L196 38" stroke="#be123c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M36 74 L98 66 L124 86 L68 92 Z" fill="#be123c"/>
+                    <path d="M150 48 L194 54 L180 74 L144 68 Z" fill="#be123c"/>
+                </svg>
+
+                <div class="eval-col-content">
+                    <div class="recup-info-card">
+                        <div class="recup-emoji">🚶‍♂️</div>
+                        <div>
+                            <div class="recup-info-title">Récup active • 6 min (Prof /1)</div>
+                            <div class="recup-info-sub">Marche, trottine, respire, étire-toi !</div>
+                        </div>
+                    </div>
+
+                    <div class="col-title" style="color:var(--moto-dark);">
+                        <span>🏍️ Course 3' • Moto</span>
+                        <span class="avg-badge avg-moto" id="v3-avg-badge">0.0 km/h</span>
+                    </div>
+
+                    <div class="projet-row">
+                        <label for="input-p3">🎯 Projet 3' (km/h) :</label>
+                        <input type="number" step="0.5" min="4" max="22" id="input-p3" class="num-input" oninput="updateProjet('p3', this.value)">
+                    </div>
+
+                    <div class="periods-grid-3" id="periods-3"></div>
+
+                    <button class="big-plus-btn moto-btn" id="btn-plus-3" onclick="addPlotActive(3)">+ 1 PLOT • P1 (1'30)</button>
+
+                    <div class="stats-big">
+                        <div class="stat-tile" id="tile-e3">
+                            <span class="stat-tile-lbl">🎯 Écart 3'</span>
+                            <span class="stat-tile-val" id="v3-ecart">--</span>
+                        </div>
+                        <div class="stat-tile" id="tile-aug">
+                            <span class="stat-tile-lbl">🚀 Accél.</span>
+                            <span class="stat-tile-val" id="v3-aug">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLONNE 3 : TABLEAU DES POINTS -->
+            <div class="eval-col col-bilan" id="col-bilan">
+                <div class="eval-col-content">
+                    <div class="col-title" style="color:var(--bilan-dark);">
+                        <span>🏆 Mes points</span>
+                        <button class="btn btn-primary" style="padding:3px 9px; font-size:0.72rem;" id="btn-toggle-sex" onclick="toggleCurrentSex()">Garçon</button>
+                    </div>
+
+                    <div class="criteria-list">
+                        <div class="crit-row"><span>🚲 Projet 9'</span><span class="crit-pts" id="c-e9">0 / 1,5</span></div>
+                        <div class="crit-row"><span>🚲 Régularité 9'</span><span class="crit-pts" id="c-r9">0 / 3</span></div>
+                        <div class="crit-row"><span>🚲 Performance 9'</span><span class="crit-pts" id="c-p9">0 / 4</span></div>
+                        <div class="crit-row"><span>🏍️ Projet 3'</span><span class="crit-pts" id="c-e3">0 / 1,5</span></div>
+                        <div class="crit-row"><span>🏍️ Performance 3'</span><span class="crit-pts" id="c-p3">0 / 4</span></div>
+                        <div class="crit-row"><span>🚀 Accélération</span><span class="crit-pts" id="c-aug">0 / 2</span></div>
+                        <div class="crit-row prof-row">
+                            <span>⏱️ Récup (Prof)</span>
+                            <span class="crit-pts" id="c-rec">Prof (/1)</span>
+                        </div>
+                        <div class="crit-row prof-row">
+                            <span>⭐ Coach (Prof)</span>
+                            <span class="crit-pts" id="c-coach">Prof (/3)</span>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <strong>🎯 Ta mission :</strong><br>
+                        • <strong>9' Vélo :</strong> même nombre de plots à chaque période.<br>
+                        • <strong>3' Moto :</strong> accélère d'au moins <strong>+1 km/h</strong> !
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL CONSEIL FIN DE 9' ================= -->
+    <div class="modal-overlay" id="advice-modal">
+        <div class="modal-box modal-box-sm">
+            <div class="modal-head">
+                <h2>💡 Conseil du Coach — Fin des 9' !</h2>
+                <button class="btn btn-slate" onclick="closeAdviceModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="advice-modal-card" id="advice-modal-9"></div>
+                <div class="advice-modal-target" id="advice-modal-3"></div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-success" style="width:100%; padding:11px; font-size:0.95rem;" onclick="closeAdviceModal()">👍 En route pour la 3' Moto !</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL BILAN PROF ================= -->
+    <div class="modal-overlay" id="bilan-modal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2>📊 Bilan Prof — Récup (/1), Coach (/3) & Note /20</h2>
+                <button class="btn btn-slate" onclick="closeBilan()">Fermer ✕</button>
+            </div>
+            <div class="modal-body">
+                <table class="bilan-table" id="bilan-table"></table>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-danger" onclick="resetLocal()">🗑️ Reset local</button>
+                <button class="btn btn-success" onclick="exportCSV()">📥 Exporter CSV (Pronote)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'eval_demifond_5eme_v2';
+        const FIREBASE_COLLECTION = 'eval_demifond_5eme';
+
+        const baseStudents = [
+            // 5B
+            { id: 1,  name: "Kélyah A.",     fullName: "ATTOUMANI-DESFARGES Kélyah", vma: 8.8,  classe: "5B", sex: "F" },
+            { id: 2,  name: "Lorenzo B.",    fullName: "BASPEYRAS Lorenzo",          vma: 12.0, classe: "5B", sex: "G" },
+            { id: 3,  name: "Lola B.",       fullName: "BASSIÉRE Lola",              vma: 8.5,  classe: "5B", sex: "F" },
+            { id: 4,  name: "Zoé B.",        fullName: "BINEAU CONGE Zoé",           vma: 9.0,  classe: "5B", sex: "F" },
+            { id: 5,  name: "Amandine B.",   fullName: "BOUTON BOSSAVIT Amandine",   vma: 8.5,  classe: "5B", sex: "F" },
+            { id: 6,  name: "Pierre C.",     fullName: "CHARRASSIER Pierre",         vma: 13.0, classe: "5B", sex: "G" },
+            { id: 7,  name: "Léna C.",       fullName: "CHAUVREAU Léna",             vma: 9.0,  classe: "5B", sex: "F" },
+            { id: 8,  name: "Romain G.",     fullName: "GORICHON Romain",            vma: 10.0, classe: "5B", sex: "G" },
+            { id: 9,  name: "Jarod G.",      fullName: "GUICHARD-MATTON Jarod",      vma: 10.0, classe: "5B", sex: "G" },
+            { id: 10, name: "Victor J.",     fullName: "JALLAGEAS Victor",           vma: 11.5, classe: "5B", sex: "G" },
+            { id: 11, name: "Nolan K.",      fullName: "KIRCHER CHEMINADE Nolan",    vma: 11.0, classe: "5B", sex: "G" },
+            { id: 12, name: "Emy L.",        fullName: "LANDEAU Emy",                vma: 9.5,  classe: "5B", sex: "F" },
+            { id: 13, name: "Charly L.",     fullName: "LAURENT Charly",             vma: 12.0, classe: "5B", sex: "G" },
+            { id: 14, name: "Iloé M.",       fullName: "MALAVERGNE Iloé",            vma: 9.0,  classe: "5B", sex: "F" },
+            { id: 15, name: "Emmy M.",       fullName: "MARCHAND Emmy",              vma: 11.4, classe: "5B", sex: "F" },
+            { id: 16, name: "Loulia P.",     fullName: "PERAUD Loulia",              vma: 8.5,  classe: "5B", sex: "F" },
+            { id: 17, name: "Noélie R.",     fullName: "RIBEREAU Noélie",            vma: 11.7, classe: "5B", sex: "F" },
+            { id: 18, name: "Jules R.",      fullName: "RICHARD Jules",              vma: 10.0, classe: "5B", sex: "G" },
+            { id: 19, name: "Léa T.",        fullName: "TALLON--MERCIER Léa",        vma: 10.0, classe: "5B", sex: "F" },
+            { id: 20, name: "Yanis V.",      fullName: "VAN ZELE Yanis",             vma: 10.0, classe: "5B", sex: "G" },
+            { id: 21, name: "Ethan V.",      fullName: "VASLIN Ethan",               vma: 9.0,  classe: "5B", sex: "G" },
+            { id: 22, name: "Sofia Y.",      fullName: "YACHOU MICHOT Sofia",        vma: 10.0, classe: "5B", sex: "F" },
+            // 5C
+            { id: 23, name: "Camille A.",    fullName: "AUDOUIT Camille",            vma: 8.5,  classe: "5C", sex: "F" },
+            { id: 24, name: "Lyam B.",       fullName: "BIBAUD Lyam",                vma: 14.0, classe: "5C", sex: "G" },
+            { id: 25, name: "Alycia B.",     fullName: "BLAY Alycia",                vma: 10.5, classe: "5C", sex: "F" },
+            { id: 26, name: "Abigaël B.",    fullName: "BRIMEUR Abigaël",            vma: 12.5, classe: "5C", sex: "F" },
+            { id: 27, name: "Ylan B.",       fullName: "BRISSON Ylan",               vma: 9.5,  classe: "5C", sex: "G" },
+            { id: 28, name: "L-Gabriel E.",  fullName: "EPOUPA MALOBÉ Louis-Gabriel",vma: 9.5,  classe: "5C", sex: "G" },
+            { id: 29, name: "Flavien G.",    fullName: "GIRY Flavien",               vma: 13.0, classe: "5C", sex: "G" },
+            { id: 30, name: "Adam G.",       fullName: "GRELET Adam",                vma: 14.5, classe: "5C", sex: "G" },
+            { id: 31, name: "Noé H.",        fullName: "HUGUET Noé",                 vma: 12.5, classe: "5C", sex: "G" },
+            { id: 32, name: "Liwia J.",      fullName: "JUNCA BILSKI Liwia",         vma: 10.0, classe: "5C", sex: "F" },
+            { id: 33, name: "Ambre L.",      fullName: "LALIDA ALEXIS Ambre",        vma: 9.5,  classe: "5C", sex: "F" },
+            { id: 34, name: "Baptiste L.",   fullName: "LIEUTAUD Baptiste",          vma: 11.5, classe: "5C", sex: "G" },
+            { id: 35, name: "Lucas M.",      fullName: "MALLET Lucas",               vma: 11.0, classe: "5C", sex: "G" },
+            { id: 36, name: "Soan M.",       fullName: "MELIOT Soan",                vma: 13.5, classe: "5C", sex: "G" },
+            { id: 37, name: "Hugo M.",       fullName: "MENARD ROULET Hugo",         vma: 15.5, classe: "5C", sex: "G" },
+            { id: 38, name: "Louna M.",      fullName: "MENEGHINI Louna",            vma: 8.5,  classe: "5C", sex: "F" },
+            { id: 40, name: "Loïs P.",       fullName: "PERISSAT Loïs",              vma: 11.5, classe: "5C", sex: "G" },
+            { id: 41, name: "Abel P.",       fullName: "PLOQUIN Abel",               vma: 11.5, classe: "5C", sex: "G" },
+            { id: 42, name: "Indians R.",    fullName: "ROUSSELIERE Indians",        vma: 11.0, classe: "5C", sex: "G" },
+            { id: 43, name: "Noé S.",        fullName: "SELLEZ Noé",                 vma: 8.5,  classe: "5C", sex: "G" },
+            { id: 44, name: "Shauna S.",     fullName: "STEINBACH Shauna",           vma: 11.5, classe: "5C", sex: "F" }
+        ];
+
+        const PERIOD_LABELS_9 = ["1'30", "3'", "4'30", "6'", "7'30", "9'"];
+        const PERIOD_LABELS_3 = ["1'30", "3'"];
+        const SLOTS = ['r1', 's1', 'r2', 's2'];
+
+        let students = [];
+        let group = { r1: null, s1: null, r2: null, s2: null };
+        let activeSlot = 'r1';
+        let classFilter = 'ALL';
+        let currentRunnerId = null;
+        let activePeriod9 = 0;
+        let activePeriod3 = 0;
+        let mobilePhase = 'velo';
+        let lastPopKey = null;
+        let adviceShownFor = {};
+        let db = null;
+        let firestoreEnabled = false;
+
+        function makeDefaultStudent(b) {
+            return {
+                ...b,
+                observer: "",
+                p9: "",
+                plots9: [0, 0, 0, 0, 0, 0],
+                recup: null,
+                p3: "",
+                plots3: [0, 0],
+                coachNote: null
+            };
+        }
+
+        function loadLocal() {
+            students = baseStudents.map(makeDefaultStudent);
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const saved = JSON.parse(raw);
+                    saved.forEach(s => {
+                        const idx = students.findIndex(x => x.id === s.id);
+                        if (idx !== -1) students[idx] = { ...students[idx], ...s };
+                    });
+                }
+            } catch (e) {}
+        }
+
+        function saveLocal() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(students)); } catch (e) {}
+        }
+
+        function initFirebase() {
+            try {
+                if (typeof firebase === 'undefined') throw new Error("No SDK");
+                const firebaseConfig = {
+                    apiKey: "AIzaSyC4MfIqwigWZm7gVwlvagDWn1B3eg2a4ZU",
+                    authDomain: "acrosport-b765f.firebaseapp.com",
+                    projectId: "acrosport-b765f",
+                    storageBucket: "acrosport-b765f.firebasestorage.app",
+                    messagingSenderId: "665449975328",
+                    appId: "1:665449975328:web:8cef0fb214fa85aea7f645"
+                };
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firestoreEnabled = true;
+
+                db.collection(FIREBASE_COLLECTION).onSnapshot((snap) => {
+                    snap.forEach(doc => {
+                        const d = doc.data();
+                        const idx = students.findIndex(s => s.id === d.id);
+                        if (idx !== -1) students[idx] = { ...students[idx], ...d };
+                    });
+                    saveLocal();
+                    renderHome();
+                    if (document.getElementById('screen-eval').style.display === 'flex') renderEval();
+                    if (document.getElementById('bilan-modal').style.display === 'flex') renderBilanTable();
+                    setSyncStatus("Synchronisé 🟢", "#059669");
+                }, () => setSyncStatus("Local 🟡", "#d97706"));
+            } catch (e) {
+                setSyncStatus("Local 🟡", "#d97706");
+            }
+        }
+
+        function setSyncStatus(txt, color) {
+            const el = document.getElementById('sync-status');
+            el.textContent = txt;
+            el.style.color = color;
+        }
+
+        function syncStudent(student) {
+            saveLocal();
+            if (!firestoreEnabled || !db) return;
+            db.collection(FIREBASE_COLLECTION).doc(String(student.id)).set(student).catch(() => {});
+        }
+
+        function setMobilePhase(phase) {
+            mobilePhase = phase;
+            ['velo', 'moto', 'bilan'].forEach(p => {
+                document.getElementById('col-' + p).classList.toggle('mobile-active', p === phase);
+                const btn = document.getElementById('ptab-' + p);
+                btn.className = 'phase-tab' + (p === phase ? ' active-' + p : '');
+            });
+        }
+
+        // ================= CALCUL DU BAREME OFFICIEL (/16 AUTO + /4 PROF = /20) =================
+        function calcScores(s) {
+            const plots9 = s.plots9 || [0,0,0,0,0,0];
+            const plots3 = s.plots3 || [0,0];
+            const has9 = plots9.some(v => v > 0);
+            const finished9 = plots9.every(v => Number(v || 0) > 0);
+            const has3 = plots3.some(v => v > 0);
+
+            const sum9 = plots9.reduce((a,b) => a + Number(b || 0), 0);
+            const vit9 = Math.round((sum9 / 6) * 10) / 10;
+
+            const sum3 = plots3.reduce((a,b) => a + Number(b || 0), 0);
+            const vit3 = Math.round((sum3 / 2) * 10) / 10;
+
+            const p9 = parseFloat(s.p9);
+            let ecart9 = null, noteEcart9 = 0;
+            if (has9 && !isNaN(p9) && p9 > 0) {
+                ecart9 = Math.round(Math.abs(p9 - vit9) * 10) / 10;
+                if (ecart9 < 1) noteEcart9 = 1.5;
+                else if (ecart9 <= 1.5) noteEcart9 = 1;
+                else noteEcart9 = 0.5;
+            }
+
+            let maxIdentical = 0;
+            if (has9) {
+                const counts = {};
+                plots9.forEach(v => {
+                    const n = Number(v || 0);
+                    if (n > 0) counts[n] = (counts[n] || 0) + 1;
+                });
+                const vals = Object.values(counts);
+                maxIdentical = vals.length ? Math.max(...vals) : 0;
+            }
+            let noteReg9 = 0;
+            if (maxIdentical >= 5) noteReg9 = 3;
+            else if (maxIdentical === 4) noteReg9 = 2;
+            else if (maxIdentical === 3) noteReg9 = 1;
+
+            const v9Round = Math.round(vit9);
+            let notePerf9 = 0;
+            if (has9) {
+                const ref = s.sex === 'F' ? v9Round + 1 : v9Round;
+                if (ref >= 13) notePerf9 = 4;
+                else if (ref === 12) notePerf9 = 3.5;
+                else if (ref === 11) notePerf9 = 3;
+                else if (ref === 10) notePerf9 = 2.5;
+                else if (ref === 9)  notePerf9 = 2;
+                else if (ref === 8)  notePerf9 = 1.5;
+                else if (ref === 7)  notePerf9 = 1;
+                else notePerf9 = 0;
+            }
+
+            const p3 = parseFloat(s.p3);
+            let ecart3 = null, noteEcart3 = 0;
+            if (has3 && !isNaN(p3) && p3 > 0) {
+                ecart3 = Math.round(Math.abs(p3 - vit3) * 10) / 10;
+                if (ecart3 < 1) noteEcart3 = 1.5;
+                else if (ecart3 <= 1.5) noteEcart3 = 1;
+                else noteEcart3 = 0.5;
+            }
+
+            const v3Round = Math.round(vit3);
+            let notePerf3 = 0;
+            if (has3) {
+                const ref3 = s.sex === 'F' ? v3Round + 1 : v3Round;
+                if (ref3 >= 14) notePerf3 = 4;
+                else if (ref3 === 13) notePerf3 = 3.5;
+                else if (ref3 === 12) notePerf3 = 3;
+                else if (ref3 === 11) notePerf3 = 2.5;
+                else if (ref3 === 10) notePerf3 = 2;
+                else if (ref3 === 9)  notePerf3 = 1.5;
+                else if (ref3 === 8)  notePerf3 = 1;
+                else notePerf3 = 0;
+            }
+
+            let aug = null, noteAug = 0;
+            if (has9 && has3) {
+                aug = Math.round((vit3 - vit9) * 10) / 10;
+                if (aug >= 1) noteAug = 2;
+                else if (aug >= 0.5) noteAug = 1;
+                else noteAug = 0;
+            }
+
+            const total16 = Math.round((noteEcart9 + noteReg9 + notePerf9 + noteEcart3 + notePerf3 + noteAug) * 10) / 10;
+            const hasRecup = (s.recup !== null && s.recup !== undefined && s.recup !== '');
+            const hasCoach = (s.coachNote !== null && s.coachNote !== undefined && s.coachNote !== '');
+            const profTotal = (hasRecup ? Number(s.recup) : 0) + (hasCoach ? Number(s.coachNote) : 0);
+            const isComplete20 = hasRecup && hasCoach;
+            const total20 = isComplete20 ? Math.round((total16 + profTotal) * 10) / 10 : null;
+
+            return {
+                has9, finished9, has3,
+                vit9, vit3, ecart9, ecart3, maxIdentical, aug,
+                noteEcart9, noteReg9, notePerf9, noteEcart3, notePerf3, noteAug,
+                total16, hasRecup, hasCoach, profTotal, isComplete20, total20
+            };
+        }
+
+        // ================= CONSEIL PERSONNALISE FIN DE 9' =================
+        function buildAdvice9(s, sc) {
+            const target3 = Math.round((sc.vit9 + 1.0) * 2) / 2;
+            const plotsTarget3 = Math.ceil(sc.vit9 + 1);
+            const first2 = (Number(s.plots9[0]) + Number(s.plots9[1])) / 2;
+            const last2  = (Number(s.plots9[4]) + Number(s.plots9[5])) / 2;
+
+            let msg9 = `🚲 <strong>Bilan 9' Vélo :</strong> moyenne de <strong>${sc.vit9} km/h</strong>.`;
+            if (sc.maxIdentical >= 5) {
+                msg9 += `<br>🎯 <strong>Métronome !</strong> Super régularité (${sc.maxIdentical}/6 périodes identiques = 3/3 pts).`;
+            } else if (last2 < first2 - 1) {
+                msg9 += `<br>⚡ Tu es parti un peu vite au début. Profite bien des 6 min de récup active pour recharger les batteries !`;
+            } else if (sc.ecart9 !== null && sc.ecart9 < 1) {
+                msg9 += `<br>👏 <strong>Contrat respecté !</strong> Ton projet 9' était très bien calibré.`;
+            } else {
+                msg9 += `<br>💪 Belle course ! Pense à bien marcher et souffler pendant la récupération.`;
+            }
+
+            const msg3 = `🏍️ <strong>Objectif pour la 3' Moto :</strong><br>Pour décrocher les <strong>2 points d'accélération</strong>, tu dois dépasser <strong>${(sc.vit9 + 1).toFixed(1)} km/h</strong> !<br>👉 Choisis un projet autour de <strong>${target3} km/h</strong> et vise <strong>${plotsTarget3} plots</strong> par période d'1'30.`;
+            const shortTxt = `💡 Moy. 9' : ${sc.vit9} km/h → Vise ≥ ${(sc.vit9 + 1).toFixed(1)} km/h (${plotsTarget3} plots) !`;
+
+            return { msg9, msg3, shortTxt };
+        }
+
+        function openAdviceModal() {
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            const sc = calcScores(s);
+            const adv = buildAdvice9(s, sc);
+            document.getElementById('advice-modal-9').innerHTML = adv.msg9;
+            document.getElementById('advice-modal-3').innerHTML = adv.msg3;
+            document.getElementById('advice-modal').style.display = 'flex';
+        }
+        function closeAdviceModal() {
+            document.getElementById('advice-modal').style.display = 'none';
+        }
+
+        // ================= ACCUEIL & SELECTION =================
+        function setClassFilter(f) {
+            classFilter = f;
+            ['ALL','5B','5C'].forEach(k => {
+                document.getElementById(k === 'ALL' ? 'f-all' : 'f-' + k).classList.toggle('active', f === k);
+            });
+            renderHome();
+        }
+
+        function renderHome() {
+            const grid = document.getElementById('students-grid');
+            grid.innerHTML = '';
+
+            const list = students
+                .filter(s => classFilter === 'ALL' || s.classe === classFilter)
+                .sort((a,b) => a.classe === b.classe ? a.name.localeCompare(b.name) : a.classe.localeCompare(b.classe));
+
+            list.forEach(s => {
+                const sc = calcScores(s);
+                const slotOf = SLOTS.find(k => group[k] === s.id);
+                const labels = { r1: '🏃 C1', s1: '👁️ O1', r2: '🏃 C2', s2: '👁️ O2' };
+                const div = document.createElement('div');
+                div.className = `student-card ${slotOf ? 'selected' : ''} ${sc.total16 > 0 ? 'done' : ''}`;
+                div.innerHTML = `
+                    ${slotOf ? `<div class="card-badge">${labels[slotOf]}</div>` : ''}
+                    <div class="card-class ${s.classe === '5B' ? 'c-5b' : 'c-5c'}">${s.classe}</div>
+                    <div class="card-sex ${s.sex === 'F' ? 'sex-f' : 'sex-g'}" onclick="toggleSexCard(event, ${s.id})">${s.sex}</div>
+                    <div class="card-name">${s.name}</div>
+                    <div class="card-meta">VMA ${s.vma}</div>
+                    ${sc.total16 > 0 ? `<div class="card-note">${sc.isComplete20 ? sc.total20 + '/20' : sc.total16 + '/16'}</div>` : ''}
+                `;
+                div.onclick = () => selectStudent(s.id);
+                grid.appendChild(div);
+            });
+            updateSlotsUI();
+        }
+
+        function toggleSexCard(e, id) {
+            e.stopPropagation();
+            const s = students.find(x => x.id === id);
+            if (!s) return;
+            s.sex = s.sex === 'G' ? 'F' : 'G';
+            syncStudent(s);
+            renderHome();
+        }
+
+        function selectStudent(id) {
+            const existing = SLOTS.find(k => group[k] === id);
+            if (existing && existing !== activeSlot) return;
+            if (group[activeSlot] === id) {
+                group[activeSlot] = null;
+            } else {
+                group[activeSlot] = id;
+                const start = SLOTS.indexOf(activeSlot);
+                for (let i = 1; i <= SLOTS.length; i++) {
+                    const next = SLOTS[(start + i) % SLOTS.length];
+                    if (!group[next]) { activeSlot = next; break; }
+                }
+            }
+            renderHome();
+        }
+
+        function focusSlot(slot) { activeSlot = slot; renderHome(); }
+        function removeSlot(slot, e) { e.stopPropagation(); group[slot] = null; activeSlot = slot; renderHome(); }
+
+        function updateSlotsUI() {
+            SLOTS.forEach(k => {
+                const el = document.getElementById('slot-' + k);
+                const nameEl = document.getElementById('name-' + k);
+                el.classList.toggle('active', activeSlot === k);
+                const s = group[k] ? students.find(x => x.id === group[k]) : null;
+                el.classList.toggle('filled', Boolean(s));
+                nameEl.textContent = s ? s.name : 'Choisir...';
+            });
+            const p1Ok = Boolean(group.r1 && group.s1);
+            const p1Part = Boolean((group.r1 || group.s1) && !p1Ok);
+            const p2Ok = Boolean(group.r2 && group.s2);
+            const p2Part = Boolean((group.r2 || group.s2) && !p2Ok);
+            document.getElementById('btn-launch').style.display = ((p1Ok || p2Ok) && !p1Part && !p2Part) ? 'inline-flex' : 'none';
+        }
+
+        function getActivePairs() {
+            const pairs = [];
+            if (group.r1 && group.s1) pairs.push({ r: 'r1', s: 's1' });
+            if (group.r2 && group.s2) pairs.push({ r: 'r2', s: 's2' });
+            return pairs;
+        }
+
+        // ================= EVALUATION =================
+        function startEvaluation() {
+            const pairs = getActivePairs();
+            if (!pairs.length) return;
+            pairs.forEach(p => {
+                const runner = students.find(x => x.id === group[p.r]);
+                const obs = students.find(x => x.id === group[p.s]);
+                if (runner && obs) { runner.observer = obs.name; syncStudent(runner); }
+            });
+            currentRunnerId = group[pairs[0].r];
+            activePeriod9 = 0;
+            activePeriod3 = 0;
+            setMobilePhase('velo');
+            document.getElementById('screen-home').style.display = 'none';
+            document.getElementById('screen-eval').style.display = 'flex';
+            renderEval();
+        }
+
+        function backHome() {
+            document.getElementById('screen-eval').style.display = 'none';
+            document.getElementById('screen-home').style.display = 'flex';
+            renderHome();
+        }
+
+        function swapRoles() {
+            const pairs = getActivePairs();
+            if (!pairs.length) return;
+            if (!confirm("🔄 Inverser les rôles ? Les observateurs deviennent les coureurs !")) return;
+            let nextId = null;
+            pairs.forEach(p => {
+                const oldR = group[p.r], oldS = group[p.s];
+                group[p.r] = oldS; group[p.s] = oldR;
+                if (currentRunnerId === oldR) nextId = oldS;
+                const runner = students.find(x => x.id === group[p.r]);
+                const obs = students.find(x => x.id === group[p.s]);
+                if (runner && obs) { runner.observer = obs.name; syncStudent(runner); }
+            });
+            currentRunnerId = nextId || group[pairs[0].r];
+            activePeriod9 = 0;
+            activePeriod3 = 0;
+            setMobilePhase('velo');
+            renderEval();
+        }
+
+        function switchRunner(id) {
+            currentRunnerId = id;
+            activePeriod9 = 0;
+            activePeriod3 = 0;
+            renderEval();
+        }
+
+        function renderEval() {
+            const pairs = getActivePairs();
+            const tabs = document.getElementById('runner-tabs');
+            tabs.innerHTML = '';
+            pairs.forEach(p => {
+                const r = students.find(x => x.id === group[p.r]);
+                if (!r) return;
+                const sc = calcScores(r);
+                const btn = document.createElement('button');
+                btn.className = `runner-tab ${r.id === currentRunnerId ? 'active' : ''}`;
+                btn.onclick = () => switchRunner(r.id);
+                btn.innerHTML = `
+                    <div class="tab-info">
+                        <div class="tab-main">🏃 ${r.name} (${r.sex})</div>
+                        <div class="tab-sub">👁️ Obs : ${r.observer || '-'}</div>
+                    </div>
+                    <strong style="color:#047857; font-size:0.88rem; flex-shrink:0;">${sc.isComplete20 ? sc.total20 + '/20' : sc.total16 + '/16'}</strong>
+                `;
+                tabs.appendChild(btn);
+            });
+
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            const sc = calcScores(s);
+
+            document.getElementById('vma-hint').textContent = `VMA ${s.vma}`;
+            document.getElementById('input-p9').value = s.p9;
+            document.getElementById('input-p3').value = s.p3;
+            document.getElementById('btn-toggle-sex').textContent = s.sex === 'F' ? 'Fille' : 'Garçon';
+
+            // Périodes 9'
+            const p9Wrap = document.getElementById('periods-9');
+            p9Wrap.innerHTML = '';
+            PERIOD_LABELS_9.forEach((lbl, idx) => {
+                const val = s.plots9[idx] || 0;
+                const key = `9-${idx}`;
+                const card = document.createElement('div');
+                card.className = `period-card ${activePeriod9 === idx ? 'active-velo' : ''}`;
+                card.onclick = () => { activePeriod9 = idx; renderEval(); };
+                card.innerHTML = `
+                    <div class="period-head"><span>P${idx+1} • ${lbl}</span><span>${val} km/h</span></div>
+                    <div class="period-controls">
+                        <button class="btn-step" onclick="stepPlot(event, 9, ${idx}, -1)">−</button>
+                        <input type="number" min="0" max="30" class="period-val ${lastPopKey === key ? 'pop-anim' : ''}" value="${val}"
+                            onclick="event.stopPropagation(); activePeriod9=${idx};"
+                            onchange="setPlot(9, ${idx}, this.value)">
+                        <button class="btn-step" onclick="stepPlot(event, 9, ${idx}, 1)">+</button>
+                    </div>
+                `;
+                p9Wrap.appendChild(card);
+            });
+            document.getElementById('btn-plus-9').textContent = `+ 1 PLOT • P${activePeriod9+1} (${PERIOD_LABELS_9[activePeriod9]})`;
+
+            // Périodes 3'
+            const p3Wrap = document.getElementById('periods-3');
+            p3Wrap.innerHTML = '';
+            PERIOD_LABELS_3.forEach((lbl, idx) => {
+                const val = s.plots3[idx] || 0;
+                const key = `3-${idx}`;
+                const card = document.createElement('div');
+                card.className = `period-card ${activePeriod3 === idx ? 'active-moto' : ''}`;
+                card.onclick = () => { activePeriod3 = idx; renderEval(); };
+                card.innerHTML = `
+                    <div class="period-head"><span>P${idx+1} • ${lbl}</span><span>${val} km/h</span></div>
+                    <div class="period-controls">
+                        <button class="btn-step" onclick="stepPlot(event, 3, ${idx}, -1)">−</button>
+                        <input type="number" min="0" max="30" class="period-val ${lastPopKey === key ? 'pop-anim' : ''}" value="${val}"
+                            onclick="event.stopPropagation(); activePeriod3=${idx};"
+                            onchange="setPlot(3, ${idx}, this.value)">
+                        <button class="btn-step" onclick="stepPlot(event, 3, ${idx}, 1)">+</button>
+                    </div>
+                `;
+                p3Wrap.appendChild(card);
+            });
+            document.getElementById('btn-plus-3').textContent = `+ 1 PLOT • P${activePeriod3+1} (${PERIOD_LABELS_3[activePeriod3]})`;
+            lastPopKey = null;
+
+            // Conseil fin de 9'
+            const advBanner = document.getElementById('advice-banner');
+            if (sc.finished9) {
+                const adv = buildAdvice9(s, sc);
+                document.getElementById('advice-banner-txt').textContent = adv.shortTxt;
+                advBanner.style.display = 'flex';
+            } else {
+                advBanner.style.display = 'none';
+            }
+
+            // Stats & couleurs des tuiles
+            document.getElementById('v9-avg-badge').textContent = `${sc.vit9} km/h`;
+            document.getElementById('v3-avg-badge').textContent = `${sc.vit3} km/h`;
+            document.getElementById('v9-ecart').textContent = sc.ecart9 !== null ? `${sc.ecart9} km/h` : '--';
+            document.getElementById('v9-reg').textContent = `${sc.maxIdentical} / 6 id.`;
+            document.getElementById('v3-ecart').textContent = sc.ecart3 !== null ? `${sc.ecart3} km/h` : '--';
+            document.getElementById('v3-aug').textContent = sc.aug !== null ? `${sc.aug >= 0 ? '+' : ''}${sc.aug} km/h` : '--';
+
+            document.getElementById('tile-e9').className = 'stat-tile ' + (sc.ecart9 === null ? '' : sc.ecart9 < 1 ? 'good' : 'warn');
+            document.getElementById('tile-r9').className = 'stat-tile ' + (sc.maxIdentical >= 5 ? 'good' : sc.maxIdentical >= 3 ? 'warn' : '');
+            document.getElementById('tile-e3').className = 'stat-tile ' + (sc.ecart3 === null ? '' : sc.ecart3 < 1 ? 'good' : 'warn');
+            document.getElementById('tile-aug').className = 'stat-tile ' + (sc.aug === null ? '' : sc.aug >= 1 ? 'good' : sc.aug >= 0.5 ? 'warn' : '');
+
+            // Critères Colonne 3
+            document.getElementById('c-e9').textContent = `${sc.noteEcart9} / 1,5`;
+            document.getElementById('c-r9').textContent = `${sc.noteReg9} / 3`;
+            document.getElementById('c-p9').textContent = `${sc.notePerf9} / 4`;
+            document.getElementById('c-e3').textContent = `${sc.noteEcart3} / 1,5`;
+            document.getElementById('c-p3').textContent = `${sc.notePerf3} / 4`;
+            document.getElementById('c-aug').textContent = `${sc.noteAug} / 2`;
+            document.getElementById('c-rec').textContent = sc.hasRecup ? `${s.recup} / 1` : `Prof (/1)`;
+            document.getElementById('c-coach').textContent = sc.hasCoach ? `${s.coachNote} / 3` : `Prof (/3)`;
+
+            if (sc.isComplete20) {
+                document.getElementById('live-score-main').textContent = `${sc.total20} / 20`;
+                document.getElementById('live-score-sub').textContent = `Note complète !`;
+            } else {
+                document.getElementById('live-score-main').textContent = `${sc.total16} / 16`;
+                document.getElementById('live-score-sub').textContent = `+ ?/4 Prof`;
+            }
+        }
+
+        function maybeTriggerAdvice9(s, course, idx) {
+            if (course !== 9 || idx !== 5) return;
+            const sc = calcScores(s);
+            if (sc.finished9 && !adviceShownFor[s.id]) {
+                adviceShownFor[s.id] = true;
+                openAdviceModal();
+            }
+        }
+
+        function updateProjet(key, val) {
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            s[key] = val;
+            syncStudent(s);
+            renderEval();
+        }
+
+        function stepPlot(e, course, idx, delta) {
+            e.stopPropagation();
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            const arr = course === 9 ? s.plots9 : s.plots3;
+            arr[idx] = Math.max(0, Number(arr[idx] || 0) + delta);
+            if (course === 9) activePeriod9 = idx; else activePeriod3 = idx;
+            lastPopKey = `${course}-${idx}`;
+            syncStudent(s);
+            renderEval();
+        }
+
+        function setPlot(course, idx, val) {
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            const arr = course === 9 ? s.plots9 : s.plots3;
+            arr[idx] = Math.max(0, parseInt(val, 10) || 0);
+            syncStudent(s);
+            renderEval();
+            maybeTriggerAdvice9(s, course, idx);
+        }
+
+        function addPlotActive(course) {
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            if (course === 9) {
+                s.plots9[activePeriod9] = Number(s.plots9[activePeriod9] || 0) + 1;
+                lastPopKey = `9-${activePeriod9}`;
+            } else {
+                s.plots3[activePeriod3] = Number(s.plots3[activePeriod3] || 0) + 1;
+                lastPopKey = `3-${activePeriod3}`;
+            }
+            syncStudent(s);
+            renderEval();
+        }
+
+        function toggleCurrentSex() {
+            const s = students.find(x => x.id === currentRunnerId);
+            if (!s) return;
+            s.sex = s.sex === 'G' ? 'F' : 'G';
+            syncStudent(s);
+            renderEval();
+        }
+
+        // ================= BILAN PROF (RECUP /1 & COACH /3) =================
+        function openBilan() {
+            renderBilanTable();
+            document.getElementById('bilan-modal').style.display = 'flex';
+        }
+        function closeBilan() { document.getElementById('bilan-modal').style.display = 'none'; }
+
+        function setProfRecup(id, val) {
+            const s = students.find(x => x.id === id);
+            if (!s) return;
+            s.recup = (s.recup === val) ? null : val;
+            syncStudent(s);
+            renderBilanTable();
+            renderHome();
+            if (document.getElementById('screen-eval').style.display === 'flex') renderEval();
+        }
+
+        function setCoachNote(id, note) {
+            const s = students.find(x => x.id === id);
+            if (!s) return;
+            s.coachNote = (s.coachNote === note) ? null : note;
+            syncStudent(s);
+            renderBilanTable();
+            renderHome();
+            if (document.getElementById('screen-eval').style.display === 'flex') renderEval();
+        }
+
+        function renderBilanTable() {
+            const sorted = [...students].sort((a,b) => a.classe === b.classe ? a.fullName.localeCompare(b.fullName) : a.classe.localeCompare(b.classe));
+            let rows = `
+                <tr>
+                    <th style="text-align:left;">Élève</th>
+                    <th>Cl.</th><th>G/F</th><th>Obs.</th>
+                    <th>Moy 9'</th><th>Moy 3'</th>
+                    <th>/16 Auto</th>
+                    <th>Récup (/1)</th>
+                    <th>Coach (/3)</th>
+                    <th>Note /20</th>
+                </tr>
+            `;
+            sorted.forEach(s => {
+                const sc = calcScores(s);
+                rows += `
+                    <tr>
+                        <td style="text-align:left; font-weight:800;">${s.fullName}</td>
+                        <td>${s.classe}</td>
+                        <td>${s.sex}</td>
+                        <td>${s.observer || '-'}</td>
+                        <td>${sc.vit9}</td>
+                        <td>${sc.vit3}</td>
+                        <td><strong>${sc.total16}</strong></td>
+                        <td>
+                            <button class="prof-btn ${s.recup === 0 ? 'active-r' : ''}" onclick="setProfRecup(${s.id}, 0)">0</button>
+                            <button class="prof-btn ${s.recup === 0.5 ? 'active-r' : ''}" onclick="setProfRecup(${s.id}, 0.5)">0,5</button>
+                            <button class="prof-btn ${s.recup === 1 ? 'active-r' : ''}" onclick="setProfRecup(${s.id}, 1)">1</button>
+                        </td>
+                        <td>
+                            <button class="prof-btn ${s.coachNote === 1 ? 'active-1' : ''}" onclick="setCoachNote(${s.id}, 1)">🥉 1</button>
+                            <button class="prof-btn ${s.coachNote === 2 ? 'active-2' : ''}" onclick="setCoachNote(${s.id}, 2)">🥈 2</button>
+                            <button class="prof-btn ${s.coachNote === 3 ? 'active-3' : ''}" onclick="setCoachNote(${s.id}, 3)">🥇 3</button>
+                        </td>
+                        <td style="font-weight:900; color:${sc.isComplete20 ? '#059669' : '#64748b'};">
+                            ${sc.isComplete20 ? sc.total20 + ' / 20' : 'En attente'}
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('bilan-table').innerHTML = rows;
+        }
+
+        function exportCSV() {
+            const header = "Nom;Classe;Sexe;VMA;Observateur;Projet 9';Moy 9';Ecart 9' (/1,5);Reg 9' (/3);Perf 9' (/4);Projet 3';Moy 3';Ecart 3' (/1,5);Perf 3' (/4);Augm (/2);Sous-total /16;Recup /1 (Prof);Coach /3 (Prof);Note Finale /20";
+            const fmt = v => (v === null || v === undefined || v === '') ? '' : String(v).replace('.', ',');
+            const lines = ["\uFEFF" + header];
+            students.forEach(s => {
+                const sc = calcScores(s);
+                lines.push([
+                    s.fullName, s.classe, s.sex, fmt(s.vma), s.observer || '',
+                    fmt(s.p9), fmt(sc.vit9), fmt(sc.noteEcart9), fmt(sc.noteReg9), fmt(sc.notePerf9),
+                    fmt(s.p3), fmt(sc.vit3), fmt(sc.noteEcart3), fmt(sc.notePerf3),
+                    fmt(sc.noteAug), fmt(sc.total16), fmt(s.recup), fmt(s.coachNote), fmt(sc.total20)
+                ].join(';'));
+            });
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "Evaluation_DemiFond_5eme_N1.csv";
+            a.click();
+        }
+
+        function resetLocal() {
+            if (!confirm("Effacer les données locales de cette tablette ?")) return;
+            localStorage.removeItem(STORAGE_KEY);
+            loadLocal();
+            renderHome();
+            renderBilanTable();
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+
+        window.onload = () => {
+            loadLocal();
+            renderHome();
+            initFirebase();
+        };
+    </script>
+</body>
+</html>
